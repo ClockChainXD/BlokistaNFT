@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../partials/head.ejs %>
+
+    <body data-sa-theme="4">
+        <% include ../partials/header.ejs %>
+            <% include ../partials/sidebar.ejs %>
+
+                <section class="content">
+                    <div class="content__inner">
+                        <header class="content__title">
+                            <h1>
+                                NFT User Management
+                            </h1>
+                        </header>
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">NFT MarketPlcae Users</h4>
+
+                                <div class="table-responsive data-table">
+                                    <table id="data-table" class="table table-bordered text-center">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th style="color: yellow;">Name</th>
+                                                <th style="color: yellow;">Bio</th>
+                                                <th style="color: yellow;">Social</th>
+                                                <th style="color: yellow;">Wallet</th>
+                                                <th style="color: yellow;">Status</th>
+                                                <th style="color: yellow;">Verify</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% for (var i=0; i < nft_users.length; i++) {%>
+                                                <tr>
+                                                    <td>
+                                                        <img src="<%= nft_users[i].userAvatarUrl?nft_users[i].userAvatarUrl:'/images/profiles/default.png'%>"
+                                                            width="50px" height="50px" />
+                                                    </td>
+                                                    <td>
+                                                        <%=nft_users[i].username%>
+                                                    </td>
+                                                    <td>
+                                                        <%=nft_users[i].userBio%>
+                                                    </td>
+                                                    <td>
+                                                        <a target="_blank" href="<%=nft_users[i].socialUrl%>">
+                                                            <%=nft_users[i].socialUrl%>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <%=nft_users[i].walletAddress%>
+                                                    </td>
+                                                    <td>
+                                                        <%=nft_users[i].verified?"Verified":""%>
+                                                    </td>
+                                                    <td>
+                                                        <% if (!nft_users[i].verified) {%>
+                                                            <button class="btn btn-sm btn-success"
+                                                                onclick="verifyProfile('<%=nft_users[i].walletAddress%>')">Verify</button>
+                                                            <%} else {%>
+                                                                <button class="btn btn-sm btn-warning"
+                                                                    onclick="disableProfile('<%=nft_users[i].walletAddress%>')">Disable</button>
+                                                                <%}%>
+                                                    </td>
+                                                </tr>
+                                                <% } %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- remove modal -->
+                <div class="modal fade" id="modal_verify_message" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header"></div>
+                            <div class="modal-body">
+                                <div class="form-group text-center">
+                                    <h3>
+                                        <i class="zwicon-info-circle" style="font-size: 3rem"></i>
+                                        Are you sure to verify?
+                                    </h3>
+                                </div>
+                                <input type="hidden" id="verify-wallet">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-link"
+                                    onclick="ConfirmDeleteModal()">Confirm</button>
+                                <button type="button" class="btn btn-link" data-dismiss="modal">Cancel
+                            </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <% include ../partials/footer.ejs %>
+                    <% include ../partials/foot.ejs %>
+
+                        <script>
+                            function verifyProfile(walletAddress) {
+                                $('#verify-wallet').val(walletAddress);
+                                $('#modal_verify_message').modal();
+                            }
+                            function disableProfile(walletAddress) {
+                                $.ajax({
+                                    url: "/admin/verify-nft-user",
+                                    method: 'post',
+                                    data: {
+                                        walletAddress: walletAddress,
+                                        verifyFlag: false
+                                    },
+                                    success: function (res) {
+                                        if (res.status === 'success') {
+                                            customAlert(res.message, true);
+                                            setTimeout(() => {
+                                                location.reload();
+                                            }, 3000);
+                                        } else customAlert(res.message);
+                                    }
+                                });
+                            }
+                            function ConfirmDeleteModal() {
+                                let walletAddress = $('#verify-wallet').val();
+                                $('#modal_verify_message').modal("hide");
+                                $.ajax({
+                                    url: "/admin/verify-nft-user",
+                                    method: 'post',
+                                    data: {
+                                        walletAddress: walletAddress,
+                                        verifyFlag: true
+                                    },
+                                    success: function (res) {
+                                        if (res.status === 'success') {
+                                            customAlert(res.message, true);
+                                            setTimeout(() => {
+                                                location.reload();
+                                            }, 1000);
+                                        } else customAlert(res.message);
+                                    }
+                                });
+                            }
+                        </script>
+
+    </body>
+
+</html>
