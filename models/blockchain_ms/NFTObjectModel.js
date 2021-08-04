@@ -13,14 +13,17 @@ let NFTObjectSchema = new Schema({
 
     name: String,
     description: String,
-    image: String,
-
+    assetUrl: String,
+    assetType: String,
     nftType: Number,
     price: String,
     minBidPrice: String,
+    instBuyPrice: String,
+    minBidInc: String,
     startTime: String,
     endTime: String,
 
+    loyaltyFee: String,
     mintTransactionHash: String,
     updatedAt: Number,
     createdAt: Number,
@@ -31,7 +34,9 @@ let NFTObjectSchema = new Schema({
     voteCount: Number,
     listed: { type: Boolean, default: false },
     attributes: [{ trait_type: String, value: Number }],
-    category: [String],
+    categories: [String],
+    category: String,
+    subcategory: String,
 
     approved: { type: Boolean, default: false },
     verified: { type: Boolean, default: false }

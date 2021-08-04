@@ -30,6 +30,7 @@ let NFTEventSchema = new Schema({
     nftType: String,
     price: String,
     minBidPrice: String,
+    instBuyPrice: String,
     startTime: String,
     endTime: String,
 

@@ -1,7 +1,7 @@
 let config = {
     mode: 'local',
     port: 3330,
-    base_url: 'https://admin.blokista.com',
+    base_url: 'https://127.0.0.1',
     mongo: {
         host: '127.0.0.1',
         port: 27017,
@@ -26,7 +26,7 @@ let config = {
         from_name: ''
     },
 
-    sub_graph_url: 'https://api.thegraph.com/subgraphs/name/lemoncrypto/blokistanft-subgraph',
+    sub_graph_url: 'https://api.studio.thegraph.com/query/4680/blokistaright/v5.0.0',
 
     session_secret: 'TESTNFTSSECRET',
     terminal_key: 'TESTNFTSSECRET-20210616'
