@@ -123,7 +123,7 @@ module.exports = BaseController.extend({
             const nftType = req.query.nftType;
             const assetType= req.query.assetType;
             let nfts = [];
-            let findOpt = { approved: true };
+            let findOpt = { };
             let sortOpt = {};
 
             if (category && category != "undefined") {
@@ -271,15 +271,21 @@ module.exports = BaseController.extend({
     },
 
     syncBlock: async function (req, res, next) {
+       
+       
         try {
+
+           
             console.log("------------- SYNC BLOCK ----------------");
             var lastTimeStamp = 0;
+            /*
             var searchData = await NFTEventModel.aggregate([{
                 "$group": {
                     "_id": null,
                     "lastTimeStamp": { "$max": "$doneOn" }
                 }
             }]);
+            */
            // if (searchData.length > 0 && searchData[0].lastTimeStamp) lastTimeStamp = searchData[0].lastTimeStamp;
 
             var data = JSON.stringify({
@@ -498,7 +504,7 @@ module.exports = BaseController.extend({
                         minter: minter,
                         nftType: nftType,
                     
-                    }, { upsert: true });
+                    }, { upsert : true });
                 }
                 
                     else if (sortedEventEntityList[i].eventType == 10) {
@@ -530,7 +536,7 @@ module.exports = BaseController.extend({
                             tokenID: nftID,
                             listed: false,
                             approved: true
-                        });
+                        }, { upsert : true });
     
                         await NFTEventModel.findOneAndUpdate({
                             doneOn: timestamp,
@@ -544,7 +550,7 @@ module.exports = BaseController.extend({
                             minBidPrice: minBidPrice,
                             startTime: startTime,
                             endTime: endTime,
-                        }, { upsert: true });
+                        }, { upsert : true });
                     }
                 else if (sortedEventEntityList[i].eventType == 1 || sortedEventEntityList[i].eventType == 12  ) {
                     ////////////////////////// Purchase Event /////////////////////////
@@ -563,7 +569,7 @@ module.exports = BaseController.extend({
                         updatedAt: timestamp,
                         ownerAddress: newOwner,
                         listed: false
-                    });
+                    }, { upsert : true });
 
                     await NFTEventModel.findOneAndUpdate({
                         doneOn: timestamp,
@@ -574,7 +580,7 @@ module.exports = BaseController.extend({
                         seller: previousOwner,
                         buyer: newOwner,
                         nftSoldAtPrice: price
-                    }, { upsert: true });
+                    }, { upsert : true });
                 }
                 else if (sortedEventEntityList[i].eventType == 2) {
                     ////////////////////////// Price Update Event /////////////////////////
@@ -588,7 +594,7 @@ module.exports = BaseController.extend({
                     await NFTObjectModel.findOneAndUpdate({ tokenID: nftID }, {
                         price: newPrice,
                         updatedAt: timestamp
-                    });
+                    }, { upsert : true });
 
                     await NFTEventModel.findOneAndUpdate({
                         doneOn: timestamp,
@@ -599,7 +605,7 @@ module.exports = BaseController.extend({
                         priceUpdater: owner,
                         oldNftPrice: oldPrice,
                         newNftPrice: newPrice
-                    }, { upsert: true });
+                    }, { upsert : true });
                 }
                 else if (sortedEventEntityList[i].eventType == 8) {
                     ////////////////////////// Auction Start Event /////////////////////////
@@ -623,7 +629,7 @@ module.exports = BaseController.extend({
                         startTime: startTime,
                         endTime: endTime,
                         nftType: 1
-                    });
+                    }, { upsert : true });
 
                     await NFTEventModel.findOneAndUpdate({
                         doneOn: timestamp,
@@ -636,7 +642,7 @@ module.exports = BaseController.extend({
                         instBuyPrice: instBuyPrice,
                         startTime: startTime,
                         endTime: endTime
-                    }, { upsert: true });
+                    }, { upsert : true });
                 }
                 else if (sortedEventEntityList[i].eventType == 11) {
                     ////////////////////////// Start Sale Event /////////////////////////
@@ -656,7 +662,7 @@ module.exports = BaseController.extend({
                         price: price,
                     
                         nftType: 0,
-                    });
+                    }, { upsert : true });
 
                     await NFTEventModel.findOneAndUpdate({
                         doneOn: timestamp,
@@ -665,7 +671,7 @@ module.exports = BaseController.extend({
                         transactionHash: txhash,
                     }, {
                         seller: owner
-                    }, { upsert: true });
+                    }, { upsert : true });
                 }
                 else if (sortedEventEntityList[i].eventType == 9) {
                     ////////////////////////// Auction with Deadline Start Event /////////////////////////
@@ -691,7 +697,7 @@ module.exports = BaseController.extend({
                         startTime: startTime,
                         endTime: endTime,
                         nftType: 2
-                    });
+                    }, { upsert : true });
 
                     await NFTEventModel.findOneAndUpdate({
                         doneOn: timestamp,
@@ -704,7 +710,7 @@ module.exports = BaseController.extend({
                         instBuyPrice: instBuyPrice,
                         startTime: startTime,
                         endTime: endTime
-                    }, { upsert: true });
+                    }, { upsert : true });
                 }
                 else if (sortedEventEntityList[i].eventType == 3) {
                     ////////////////////////// Status Update Event /////////////////////////
@@ -719,7 +725,7 @@ module.exports = BaseController.extend({
                     await NFTObjectModel.findOneAndUpdate({ tokenID: nftID }, {
                         updatedAt: timestamp,
                         listed: isListed
-                    });
+                    }, { upsert : true });
 
                     await NFTEventModel.findOneAndUpdate({
                         doneOn: timestamp,
@@ -729,7 +735,7 @@ module.exports = BaseController.extend({
                     }, {
                         statusUpdater: owner,
                         isListed: isListed,
-                    }, { upsert: true });
+                    }, { upsert : true });
                 }
                 else if (sortedEventEntityList[i].eventType == 4) {
                     ////////////////////////// Burn Event /////////////////////////
@@ -748,7 +754,7 @@ module.exports = BaseController.extend({
                         nftIDSold: nftID,
                         transactionHash: txhash,
                     }, {
-                    }, { upsert: true });
+                    }, { upsert : true });
                 }
                 else if (sortedEventEntityList[i].eventType == 5) {
                     ////////////////////////// Bid Create Event /////////////////////////
@@ -771,7 +777,7 @@ module.exports = BaseController.extend({
                     }, {
                         bidder: buyer,
                         bidPrice: price
-                    }, { upsert: true });
+                    }, { upsert : true });
                 }
               
                 else if (sortedEventEntityList[i].eventType == 7) {
@@ -791,8 +797,7 @@ module.exports = BaseController.extend({
                         updatedAt: timestamp,
                         ownerAddress: newOwner,
                         listed: false
-                    });
-
+                    }, { upsert : true });
                     await NFTEventModel.findOneAndUpdate({
                         doneOn: timestamp,
                         eventType: 7,
@@ -802,11 +807,11 @@ module.exports = BaseController.extend({
                         seller: previousOwner,
                         buyer: newOwner,
                         nftSoldAtPrice: price
-                    }, { upsert: true });
+                    }, { upsert : true });
                 }
             }
 
-            return res.send({ status: 'success' });
+            return res.send({ status: 'success', data: sortedEventEntityList , eventlength:NFTEventModel.length });
         }
         catch (ex) {
             console.log(ex);
