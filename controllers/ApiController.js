@@ -134,7 +134,9 @@ module.exports = BaseController.extend({
                 if (nftType == "auction") findOpt.nftType = 1;
                 if (nftType == "unlimited") findOpt.nftType = 2;
             }
+            if(assetType && assetType!="undefined"){
             findOpt.assetType=assetType;
+            }
             if (sortField && sortOrder) {
                 if (sortOrder == "asc") {
                     sortOpt[`${sortField}`] = 1;
