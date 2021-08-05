@@ -1,6 +1,6 @@
 let config = {
     mode: 'local',
-    port: 3330,
+    port: 5000,
     base_url: 'https://admin.blokista.com',
     mongo: {
         host: '127.0.0.1',

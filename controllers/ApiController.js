@@ -121,7 +121,7 @@ module.exports = BaseController.extend({
             const sortField = req.query.sortField;
             const sortOrder = req.query.sortOrder;
             const nftType = req.query.nftType;
-
+            const assetType= req.query.assetType;
             let nfts = [];
             let findOpt = { approved: true };
             let sortOpt = {};
@@ -134,7 +134,7 @@ module.exports = BaseController.extend({
                 if (nftType == "auction") findOpt.nftType = 1;
                 if (nftType == "unlimited") findOpt.nftType = 2;
             }
-
+            findOpt.assetType=assetType;
             if (sortField && sortOrder) {
                 if (sortOrder == "asc") {
                     sortOpt[`${sortField}`] = 1;

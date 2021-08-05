@@ -43,5 +43,6 @@
 	"Are you sure to verify?": "Are you sure to verify?",
 	"Confirm": "Confirm",
 	"User Verify Status Updated Successfully": "User Verify Status Updated Successfully",
-	"Unknown user": "Unknown user"
+	"Unknown user": "Unknown user",
+	"Password is not correct": "Password is not correct"
 }
