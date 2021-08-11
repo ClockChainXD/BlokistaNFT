@@ -9,7 +9,8 @@ let NFTUserSchema = new Schema({
     userBio: String,
     userAvatarUrl: String,
     userBackgroupUrl: String,
-
+    
+    isGallery: { type: Boolean, default: false },
     socialPortfolioUrl: String,
     socialTwitterUrl: String,
 

@@ -122,18 +122,32 @@ module.exports = BaseController.extend({
             const sortOrder = req.query.sortOrder;
             const nftType = req.query.nftType;
             const assetType= req.query.assetType;
-            let nfts = [];
-            let findOpt = { approved: true };
-            let sortOpt = {};
+            const subcategory=req.query.subcategory;
+            const rangeMin=req.query.rangeMin;
+            const rangeMax=req.query.rangeMax;
+            const rangeOpt=req.query.rangeOpt;
+            
+            
+           
 
+        
+            let nfts = [];
+            let findOpt = { };
+            let sortOpt = {};
+            
+            
             if (category && category != "undefined") {
                 findOpt.category = category;
+            }
+            if (subcategory && subcategory != "undefined") {
+                findOpt.subcategory = subcategory;
             }
             if (nftType && nftType != "undefined") {
                 if (nftType == "fixed") findOpt.nftType = 0;
                 if (nftType == "auction") findOpt.nftType = 1;
                 if (nftType == "unlimited") findOpt.nftType = 2;
             }
+
             if(assetType && assetType!="undefined"){
             findOpt.assetType=assetType;
             }
@@ -145,7 +159,28 @@ module.exports = BaseController.extend({
                     sortOpt[`${sortField}`] = -1;
                 }
             }
+            
+            if(rangeOpt && rangeOpt!="undefined"){
+              
+                    if(rangeOpt=="minBidPrice")
+                        findOpt.minBidPrice={ $gte: rangeMin, $lte: rangeMax};
+                        
+                    else if(rangeOpt=="instBuyPrice")
+                        findOpt.instBuyPrice={ $gte: rangeMin, $lte: rangeMax};
+                    
+                    else if(rangeOpt=="minBidInc")
+                        findOpt.minBidInc={ $gte: rangeMin, $lte: rangeMax};
+                        
+                    else if(rangeOpt=="price")
+                        findOpt.price={ $gte: rangeMin, $lte: rangeMax};
+                        
 
+                
+                }
+
+            
+            
+            
             nftList = await NFTObjectModel.find(findOpt).sort(sortOpt).skip(start).limit(count);
             let totalNftList = await NFTObjectModel.find(findOpt);
 
@@ -160,10 +195,23 @@ module.exports = BaseController.extend({
 
     getNFTUserFullDetail: async function (req, res, next) {
         try {
-            const walletAddress = req.params.walletAddress.toLowerCase();
+            let walletAddress = req.params.walletAddress;
+           
 
-            const userProfile = await NFTUserModel.findOne({ walletAddress: walletAddress });
+            if (!walletAddress) return res.send({ status: 'failed', exception: "Invalid Wallet Address" });
+            let userProfile;
+            if(walletAddress[0]!='0'){
+                 userProfile = await NFTUserModel.findOne({ customUrl: walletAddress });
+                 if (!userProfile) return res.send({ status: 'failed', exception: "Invalid Custom Url" });
 
+                 walletAddress=userProfile.walletAddress;
+                }
+            else{
+                walletAddress=walletAddress.toLowerCase();
+             userProfile = await NFTUserModel.findOne({ walletAddress: walletAddress });
+             if (!userProfile) return res.send({ status: 'failed', exception: "Invalid Wallet Address" });
+            // const userProfile = await NFTUserModel.findOne({ walletAddress: walletAddress });
+            }
             let createdNfts = [];
             let currentNfts = [];
             let boughtNfts = [];
