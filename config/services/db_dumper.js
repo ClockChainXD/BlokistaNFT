@@ -11,9 +11,9 @@ let job = new CronJob('30 1 * * *', function () { /* Upload Backup Every 1 AM */
         if (!fs.existsSync('./db_dump'))
             fs.mkdirSync('./db_dump');
 
-        let dump_filename = `NanaiNFTs_DB_${dateformat(new Date(), "yyyy_mm_dd")}.gz`;
+        let dump_filename = `Blokista_DB_${dateformat(new Date(), "yyyy_mm_dd")}.gz`;
         let backupProcess = spawn('mongodump', [
-            '--db=NanaiNFTs_DB',
+            '--db=BlokistaTestnetDB',
             `--archive=./db_dump/${dump_filename}`,
             '--gzip'
         ]);

@@ -5,7 +5,7 @@ let config = {
     mongo: {
         host: '127.0.0.1',
         port: 27017,
-        db_name: 'BlokistaDB'
+        db_name: 'BlokistaTestnet2DB'
     },
     dev_info: {
         name: 'Technical Manager',
@@ -26,7 +26,7 @@ let config = {
         from_name: ''
     },
 
-    sub_graph_url: 'https://api.studio.thegraph.com/query/4680/blokistaright/v5.0.0',
+    sub_graph_url: 'https://api.thegraph.com/subgraphs/name/clockchainxd/blokistachapel',
 
     session_secret: 'TESTNFTSSECRET',
     terminal_key: 'TESTNFTSSECRET-20210616'

@@ -28,9 +28,9 @@ let NFTEventSchema = new Schema({
 
     minter: String,
     nftType: String,
-    price: String,
-    minBidPrice: String,
-    instBuyPrice: String,
+    price: Number,
+    minBidPrice: Number,
+    instBuyPrice: Number,
     startTime: String,
     endTime: String,
 

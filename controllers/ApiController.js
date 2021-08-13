@@ -125,7 +125,9 @@ module.exports = BaseController.extend({
             const subcategory=req.query.subcategory;
             const rangeMin=req.query.rangeMin;
             const rangeMax=req.query.rangeMax;
-            const rangeOpt=req.query.rangeOpt;
+            const status=req.query.status;
+          //  const showAll=Boolean(req.query.showAll);
+           // const rangeOpt=req.query.rangeOpt;
             
             
            
@@ -160,31 +162,37 @@ module.exports = BaseController.extend({
                 }
             }
             
-            if(rangeOpt && rangeOpt!="undefined"){
+            if(status<3){
+                findOpt.status=status;
+            }
               
-                    if(rangeOpt=="minBidPrice")
-                        findOpt.minBidPrice={ $gte: rangeMin, $lte: rangeMax};
-                        
-                    else if(rangeOpt=="instBuyPrice")
-                        findOpt.instBuyPrice={ $gte: rangeMin, $lte: rangeMax};
                     
-                    else if(rangeOpt=="minBidInc")
-                        findOpt.minBidInc={ $gte: rangeMin, $lte: rangeMax};
+                    
+                   //     findOpt.minBidPrice={ $gte: rangeMin, $lte: rangeMax};
                         
-                    else if(rangeOpt=="price")
-                        findOpt.price={ $gte: rangeMin, $lte: rangeMax};
+                   //   findOpt.instBuyPrice={ $gte: rangeMin, $lte: rangeMax};
+                    
+                //        findOpt.minBidInc={ $gte: rangeMin, $lte: rangeMax};
                         
-
+                 //       findOpt.price={ $gte: rangeMin, $lte: rangeMax};
+                        
+            let findopt2=findOpt;
                 
-                }
+                
 
             
             
             
-            nftList = await NFTObjectModel.find(findOpt).sort(sortOpt).skip(start).limit(count);
-            let totalNftList = await NFTObjectModel.find(findOpt);
+            nftList = await NFTObjectModel.find(findOpt).find({ price:{ $gte: rangeMin, $lte: rangeMax  } }).sort(sortOpt).limit(count);
+           
+ nfts=nfts.concat(nftList);
 
-            return res.send({ status: 'success', totalCount: totalNftList.length, nftList: nftList });
+ findopt2.minBidPrice={ $gte: rangeMin, $lte: rangeMax};
+nftList3 = await NFTObjectModel.find(findopt2).sort(sortOpt).limit(count);
+nfts=nfts.concat(nftList3);
+   
+
+return res.send({ status: 'success', totalCount:  nfts.length, nftList: nfts });
         }
         catch (ex) {
             return res.send({ status: 'failed', exception: ex });
@@ -534,8 +542,9 @@ module.exports = BaseController.extend({
                         ownerAddress: minter,
                         tokenID: nftID,
                         listed: false,
-                        approved: true
-                    });
+                        approved: true,
+                        status:0,
+                    },{ upsert: true });
 
                     await NFTEventModel.findOneAndUpdate({
                         doneOn: timestamp,
@@ -556,8 +565,8 @@ module.exports = BaseController.extend({
                         const nftID = sortedEventEntityList[i].nftID;
                         const minter = sortedEventEntityList[i].minter;
                         const nftType = sortedEventEntityList[i].nftType;
-                        const price = ethers.utils.formatEther(sortedEventEntityList[i].price);
-                        const minBidPrice = ethers.utils.formatEther(sortedEventEntityList[i].minBidPrice);
+                        const price = parseFloat(ethers.utils.formatEther(sortedEventEntityList[i].price));
+                        const minBidPrice = parseFloat(ethers.utils.formatEther(sortedEventEntityList[i].minBidPrice));
                         const startTime = sortedEventEntityList[i].startTime;
                         const endTime = sortedEventEntityList[i].endTime;
                         const uri = sortedEventEntityList[i].uri;
@@ -569,7 +578,8 @@ module.exports = BaseController.extend({
                             minBidPrice: minBidPrice,
                             startTime: startTime,
                             endTime: endTime,
-    
+                            
+                            status:0,
                             mintTransactionHash: txhash,
                             updatedAt: timestamp,
                             createdAt: timestamp,
@@ -578,7 +588,7 @@ module.exports = BaseController.extend({
                             tokenID: nftID,
                             listed: false,
                             approved: true
-                        });
+                        },{ upsert: true });
     
                         await NFTEventModel.findOneAndUpdate({
                             doneOn: timestamp,
@@ -600,7 +610,7 @@ module.exports = BaseController.extend({
                     const txhash = sortedEventEntityList[i].txhash;
                     const nftID = sortedEventEntityList[i].nftID;
                     const uri = sortedEventEntityList[i].uri;
-                    const price = ethers.utils.formatEther(sortedEventEntityList[i].price);
+                    const price = parseFloat(ethers.utils.formatEther(sortedEventEntityList[i].price));
                     const previousOwner = sortedEventEntityList[i].previousOwner;
                     const newOwner = sortedEventEntityList[i].newOwner;
                     const evntype=sortedEventEntityList[i].eventType;
@@ -610,8 +620,9 @@ module.exports = BaseController.extend({
                         price: price,
                         updatedAt: timestamp,
                         ownerAddress: newOwner,
+                        status:0,
                         listed: false
-                    });
+                    },{ upsert: true });
 
                     await NFTEventModel.findOneAndUpdate({
                         doneOn: timestamp,
@@ -630,13 +641,13 @@ module.exports = BaseController.extend({
                     const txhash = sortedEventEntityList[i].txhash;
                     const nftID = sortedEventEntityList[i].nftID;
                     const owner = sortedEventEntityList[i].owner;
-                    const oldPrice = ethers.utils.formatEther(sortedEventEntityList[i].oldPrice);
-                    const newPrice = ethers.utils.formatEther(sortedEventEntityList[i].newPrice);
+                    const oldPrice = parseFloat(ethers.utils.formatEther(sortedEventEntityList[i].oldPrice));
+                    const newPrice = parseFloat(ethers.utils.formatEther(sortedEventEntityList[i].newPrice));
 
                     await NFTObjectModel.findOneAndUpdate({ tokenID: nftID }, {
                         price: newPrice,
                         updatedAt: timestamp
-                    });
+                    },{ upsert: true });
 
                     await NFTEventModel.findOneAndUpdate({
                         doneOn: timestamp,
@@ -655,11 +666,11 @@ module.exports = BaseController.extend({
                     const txhash = sortedEventEntityList[i].txhash;
                     const nftID = sortedEventEntityList[i].nftID;
                     const owner = sortedEventEntityList[i].owner;
-                    const minBidPrice =ethers.utils.formatEther(sortedEventEntityList[i].minBidPrice);
+                    const minBidPrice =parseFloat(ethers.utils.formatEther(sortedEventEntityList[i].minBidPrice));
                     const minBidInc=sortedEventEntityList[i].minBidInc;
                     const startTime = Date.now();
                     const endTime = sortedEventEntityList[i].endTime;
-                    const instBuyPrice=ethers.utils.formatEther(sortedEventEntityList[i].instBuyPrice);
+                    const instBuyPrice=parseFloat(ethers.utils.formatEther(sortedEventEntityList[i].instBuyPrice));
                     await NFTBidModel.deleteMany({ tokenID: nftID });
 
                     await NFTObjectModel.findOneAndUpdate({ tokenID: nftID }, {
@@ -670,8 +681,9 @@ module.exports = BaseController.extend({
                         minBidInc: minBidInc,
                         startTime: startTime,
                         endTime: endTime,
-                        nftType: 1
-                    });
+                        nftType: 1,
+                        status: 1
+                    },{ upsert: true });
 
                     await NFTEventModel.findOneAndUpdate({
                         doneOn: timestamp,
@@ -692,7 +704,7 @@ module.exports = BaseController.extend({
                     const txhash = sortedEventEntityList[i].txhash;
                     const nftID = sortedEventEntityList[i].nftID;
                     const owner = sortedEventEntityList[i].owner;
-                    const price = ethers.utils.formatEther(sortedEventEntityList[i].price);
+                    const price = parseFloat(ethers.utils.formatEther(sortedEventEntityList[i].price));
                     
                     
 
@@ -702,9 +714,9 @@ module.exports = BaseController.extend({
                         updatedAt: timestamp,
                         listed: true,
                         price: price,
-                    
+                        status: 2,
                         nftType: 0,
-                    });
+                    },{ upsert: true });
 
                     await NFTEventModel.findOneAndUpdate({
                         doneOn: timestamp,
@@ -721,8 +733,8 @@ module.exports = BaseController.extend({
                     const txhash = sortedEventEntityList[i].txhash;
                     const nftID = sortedEventEntityList[i].nftID;
                     const owner = sortedEventEntityList[i].owner;
-                    const minBidPrice = ethers.utils.formatEther(sortedEventEntityList[i].minBidPrice);
-                    const instBuyPrice=ethers.utils.formatEther(sortedEventEntityList[i].instBuyPrice);
+                    const minBidPrice = parseFloat(ethers.utils.formatEther(sortedEventEntityList[i].minBidPrice));
+                    const instBuyPrice=parseFloat(ethers.utils.formatEther(sortedEventEntityList[i].instBuyPrice));
 
                     const minBidInc=sortedEventEntityList[i].minBidInc;
                     const startTime = Date.now();
@@ -738,8 +750,9 @@ module.exports = BaseController.extend({
                         minBidInc: minBidInc,
                         startTime: startTime,
                         endTime: endTime,
-                        nftType: 2
-                    });
+                        nftType: 2,
+                        status: 3
+                    },{ upsert: true });
 
                     await NFTEventModel.findOneAndUpdate({
                         doneOn: timestamp,
@@ -767,7 +780,7 @@ module.exports = BaseController.extend({
                     await NFTObjectModel.findOneAndUpdate({ tokenID: nftID }, {
                         updatedAt: timestamp,
                         listed: isListed
-                    });
+                    },{ upsert: true });
 
                     await NFTEventModel.findOneAndUpdate({
                         doneOn: timestamp,
@@ -804,7 +817,7 @@ module.exports = BaseController.extend({
                     const txhash = sortedEventEntityList[i].txhash;
                     const nftID = sortedEventEntityList[i].nftID;
                     const buyer = sortedEventEntityList[i].buyer;
-                    const price = ethers.utils.formatEther(sortedEventEntityList[i].price);
+                    const price = parseFloat(ethers.utils.formatEther(sortedEventEntityList[i].price));
 
                     await NFTBidModel.findOneAndUpdate({ tokenID: nftID, bidder: buyer }, {
                         doneOn: timestamp,
@@ -828,7 +841,7 @@ module.exports = BaseController.extend({
                     const txhash = sortedEventEntityList[i].txhash;
                     const nftID = sortedEventEntityList[i].nftID;
                     const uri = sortedEventEntityList[i].uri;
-                    const price = ethers.utils.formatEther(sortedEventEntityList[i].price);
+                    const price = parseFloat(ethers.utils.formatEther(sortedEventEntityList[i].price));
                     const previousOwner = sortedEventEntityList[i].previousOwner;
                     const newOwner = sortedEventEntityList[i].newOwner;
 
@@ -838,8 +851,9 @@ module.exports = BaseController.extend({
                         price: price,
                         updatedAt: timestamp,
                         ownerAddress: newOwner,
-                        listed: false
-                    });
+                        listed: false,
+                        status:0
+                    },{ upsert: true });
 
                     await NFTEventModel.findOneAndUpdate({
                         doneOn: timestamp,
