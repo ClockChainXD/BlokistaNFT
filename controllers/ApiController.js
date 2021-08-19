@@ -160,7 +160,13 @@ module.exports = BaseController.extend({
                 }
             }
             
+<<<<<<< Updated upstream
             if(rangeOpt && rangeOpt!="undefined"){
+=======
+            if(status<4){
+                findOpt.status=status;
+            }
+>>>>>>> Stashed changes
               
                     if(rangeOpt=="minBidPrice")
                         findOpt.minBidPrice={ $gte: rangeMin, $lte: rangeMax};
