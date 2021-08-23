@@ -162,10 +162,15 @@ module.exports = BaseController.extend({
                 }
             }
             
-            if(status<3){
+            if(status<4){
                 findOpt.status=status;
+               
             }
-              
+             else{
+
+                nftList = await NFTObjectModel.find(findOpt).find({ price:{ $gte: rangeMin, $lte: rangeMax  } }).sort(sortOpt).limit(count);
+                return res.send({ status: 'success', totalCount:  nftList.length, nftList: nftList });
+             } 
                     
                     
                    //     findOpt.minBidPrice={ $gte: rangeMin, $lte: rangeMax};
@@ -544,7 +549,7 @@ return res.send({ status: 'success', totalCount:  nfts.length, nftList: nfts });
                         listed: false,
                         approved: true,
                         status:0,
-                    },{ upsert: true });
+                    });
 
                     await NFTEventModel.findOneAndUpdate({
                         doneOn: timestamp,
@@ -622,7 +627,7 @@ return res.send({ status: 'success', totalCount:  nfts.length, nftList: nfts });
                         ownerAddress: newOwner,
                         status:0,
                         listed: false
-                    },{ upsert: true });
+                    });
 
                     await NFTEventModel.findOneAndUpdate({
                         doneOn: timestamp,
@@ -647,7 +652,7 @@ return res.send({ status: 'success', totalCount:  nfts.length, nftList: nfts });
                     await NFTObjectModel.findOneAndUpdate({ tokenID: nftID }, {
                         price: newPrice,
                         updatedAt: timestamp
-                    },{ upsert: true });
+                    });
 
                     await NFTEventModel.findOneAndUpdate({
                         doneOn: timestamp,
@@ -683,7 +688,7 @@ return res.send({ status: 'success', totalCount:  nfts.length, nftList: nfts });
                         endTime: endTime,
                         nftType: 1,
                         status: 1
-                    },{ upsert: true });
+                    });
 
                     await NFTEventModel.findOneAndUpdate({
                         doneOn: timestamp,
@@ -716,7 +721,7 @@ return res.send({ status: 'success', totalCount:  nfts.length, nftList: nfts });
                         price: price,
                         status: 2,
                         nftType: 0,
-                    },{ upsert: true });
+                    });
 
                     await NFTEventModel.findOneAndUpdate({
                         doneOn: timestamp,
@@ -752,7 +757,7 @@ return res.send({ status: 'success', totalCount:  nfts.length, nftList: nfts });
                         endTime: endTime,
                         nftType: 2,
                         status: 3
-                    },{ upsert: true });
+                    });
 
                     await NFTEventModel.findOneAndUpdate({
                         doneOn: timestamp,
@@ -780,7 +785,7 @@ return res.send({ status: 'success', totalCount:  nfts.length, nftList: nfts });
                     await NFTObjectModel.findOneAndUpdate({ tokenID: nftID }, {
                         updatedAt: timestamp,
                         listed: isListed
-                    },{ upsert: true });
+                    });
 
                     await NFTEventModel.findOneAndUpdate({
                         doneOn: timestamp,
@@ -853,7 +858,7 @@ return res.send({ status: 'success', totalCount:  nfts.length, nftList: nfts });
                         ownerAddress: newOwner,
                         listed: false,
                         status:0
-                    },{ upsert: true });
+                    });
 
                     await NFTEventModel.findOneAndUpdate({
                         doneOn: timestamp,

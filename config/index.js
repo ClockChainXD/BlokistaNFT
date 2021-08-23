@@ -5,7 +5,7 @@ let config = {
     mongo: {
         host: '127.0.0.1',
         port: 27017,
-        db_name: 'BlokistaTestnet2DB'
+        db_name: 'BlokistaTestne2DB'
     },
     dev_info: {
         name: 'Technical Manager',
