@@ -11,6 +11,7 @@ let NFTObjectModel = require('../models/blockchain_ms/NFTObjectModel');
 let NFTBidModel = require('../models/blockchain_ms/NFTBidModel');
 let NFTUserModel = require('../models/blockchain_ms/NFTUserModel');
 let NFTEventModel = require('../models/blockchain_ms/NFTEventModel');
+const { forEach } = require('underscore');
 
 
 module.exports = BaseController.extend({
@@ -105,7 +106,7 @@ module.exports = BaseController.extend({
                 assetUrl: assetUrl,
                 assetType: assetType
             }, { upsert: true, new: true });
-
+                
             return res.send({ status: 'success', baseID: nftObject.baseID });
         }
         catch (ex) {
@@ -784,7 +785,9 @@ return res.send({ status: 'success', totalCount:  nfts.length, nftList: nfts });
 
                     await NFTObjectModel.findOneAndUpdate({ tokenID: nftID }, {
                         updatedAt: timestamp,
-                        listed: isListed
+                        listed: isListed,
+                        startTime: 0,
+                        endTime: 0
                     });
 
                     await NFTEventModel.findOneAndUpdate({
@@ -857,7 +860,10 @@ return res.send({ status: 'success', totalCount:  nfts.length, nftList: nfts });
                         updatedAt: timestamp,
                         ownerAddress: newOwner,
                         listed: false,
-                        status:0
+                        status:0,
+                        endTime:0,
+                        startTime:0
+
                     });
 
                     await NFTEventModel.findOneAndUpdate({

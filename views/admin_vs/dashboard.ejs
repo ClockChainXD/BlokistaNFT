@@ -15,6 +15,63 @@
                         </header>
 
                     </div>
+                    <div class="table-responsive data-table">
+                        <table id="data-table" class="table table-bordered text-center">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th style="color: yellow;">Seller</th>
+                                    <th style="color: yellow;">Buyer</th>
+                                    <th style="color: yellow;">Price</th>
+                                    <th style="color: yellow;">Comission</th>
+                                    <th style="color: yellow;">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% var income=0; %>
+                                <% nft_events.filter(item => {if(item.eventType==1 || item.eventType==12 || item.eventType==7)return item;}).forEach( item => { %>
+                                    <tr>
+                                        <td>
+                                            <img src="<%= nft_users.find(a => a?.walletAddress==item.seller)?.avatarUrl ? nft_users.find(a => a.walletAddress==item.seller)?.avatarUrl:'/images/profiles/default.png'%>"
+                                                width="50px" height="50px" />
+                                        </td>
+                                        <td>
+                                            <%=nft_users.find(a => a.walletAddress==item.seller)?.displayName ? nft_users.find(a => a.walletAddress==item.seller).displayName : item.seller  %>
+                                        </td>
+                                        <td>
+                                            <%=nft_users.find(a => a.walletAddress==item.buyer)?.displayName ? nft_users.find(a => a.walletAddress==item.buyer).displayName : item.buyer  %>
+
+                                        </td>
+                                        <td>
+                                                <%=item.nftSoldAtPrice%>
+                                        </td>
+                                        <td>
+                                            <%=(item.nftSoldAtPrice*(10/100)) %>
+                                        </td>
+                                        <td>
+                                            <% var a = new Date(item.doneOn * 1000);
+                                            var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                                            var year = a.getFullYear();
+                                            var month = months[a.getMonth()];
+                                            var date = a.getDate();
+                                            var hour = a.getHours();
+                                            var min = a.getMinutes();
+                                            var sec = a.getSeconds();
+                                            var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+                                            %>
+                                            <%=time%>
+                                        </td>
+                                       
+                                    </tr>
+                                    <% income=(item.nftSoldAtPrice*(10/100))+income;} );%>
+                            <tr>
+                                <td>
+                                  Total Income: <%=income%> BNB
+                                </td>
+                            </tr>
+                                </tbody>
+                        </table>
+                    </div>
                 </section>
 
 

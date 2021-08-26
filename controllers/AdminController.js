@@ -83,6 +83,8 @@ module.exports = BaseController.extend({
 
     dashboard: async function (req, res, next) {
         let user = req.session.user;
+        let nft_users = await NFTUserModel.find();
+        let nft_events = await NFTEventModel.find();
         let v = new View(res, 'admin_vs/dashboard');
         v.render({
             title: 'TestNFTs|Dashboard',
@@ -91,6 +93,8 @@ module.exports = BaseController.extend({
             tab_text: 'admin_dashboard',
             sub_text: '',
             user: user,
+            nft_users:nft_users,
+            nft_events:nft_events,
         })
     },
 

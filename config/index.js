@@ -1,6 +1,6 @@
 let config = {
     mode: 'local',
-    port: 5000,
+    port: 3330,
     base_url: 'https://admin.blokista.com',
     mongo: {
         host: '127.0.0.1',
@@ -10,12 +10,14 @@ let config = {
     dev_info: {
         name: 'Technical Manager',
         email: 'dev@dev.com',
-        password: 'dev'
+        password: '4339f6fd59e9637b0e6f31d477c41aec96179a06cb44151ce51987606cb6e2cb'
+        // devBlokista
     },
     admin_info: {
         name: 'Administrator',
         email: 'admin@admin.com',
-        password: 'admin'
+        password: 'b38f7d462bbca34b27af4f0a572f53f0e04325c5b982ba69c0ee5f9804fb613a'
+        // adminBlokista
     },
     smtp_info: {
         host: '',
