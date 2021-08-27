@@ -13,7 +13,7 @@ let job = new CronJob('30 1 * * *', function () { /* Upload Backup Every 1 AM */
 
         let dump_filename = `Blokista_DB_${dateformat(new Date(), "yyyy_mm_dd")}.gz`;
         let backupProcess = spawn('mongodump', [
-            '--db=BlokistaTestnetDB',
+            '--db=BlokistaDBv2',
             `--archive=./db_dump/${dump_filename}`,
             '--gzip'
         ]);

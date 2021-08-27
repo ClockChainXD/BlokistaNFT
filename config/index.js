@@ -1,11 +1,11 @@
 let config = {
     mode: 'local',
-    port: 3330,
+    port: 5000,
     base_url: 'https://admin.blokista.com',
     mongo: {
         host: '127.0.0.1',
         port: 27017,
-        db_name: 'BlokistaTestne2DB'
+        db_name: 'BlokistaDBv2'
     },
     dev_info: {
         name: 'Technical Manager',
